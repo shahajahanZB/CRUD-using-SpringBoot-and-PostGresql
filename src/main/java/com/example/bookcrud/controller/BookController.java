@@ -1,5 +1,7 @@
 package com.example.bookcrud.controller;
 
+import com.example.bookcrud.dto.BookRequest;
+import com.example.bookcrud.dto.BookResponse;
 import com.example.bookcrud.model.Book;
 import com.example.bookcrud.service.BookService;
 import org.springframework.web.bind.annotation.*;
@@ -16,25 +18,40 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    // CREATE
+    /* =========================
+       CREATE (ENTITY INPUT)
+       ========================= */
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
-        return bookService.createBook(book);
+    public Book createBook(@RequestBody BookRequest request) {
+        return bookService.createBook(request);
     }
 
-    // READ ALL
+    /* =========================
+       READ ALL (DTO OUTPUT)
+       Supports optional filter:
+       /api/books?categoryId=1
+       ========================= */
     @GetMapping
-    public List<Book> getAllBooks() {
+    public List<BookResponse> getAllBooks(
+            @RequestParam(required = false) Long categoryId
+    ) {
+        if (categoryId != null) {
+            return bookService.getBooksByCategory(categoryId);
+        }
         return bookService.getAllBooks();
     }
 
-    // READ ONE
+    /* =========================
+       READ ONE (DTO OUTPUT)
+       ========================= */
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable Long id) {
+    public BookResponse getBook(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
-    // UPDATE
+    /* =========================
+       UPDATE (ENTITY INPUT)
+       ========================= */
     @PutMapping("/{id}")
     public Book updateBook(
             @PathVariable Long id,
@@ -43,7 +60,9 @@ public class BookController {
         return bookService.updateBook(id, book);
     }
 
-    // DELETE
+    /* =========================
+       DELETE
+       ========================= */
     @DeleteMapping("/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);

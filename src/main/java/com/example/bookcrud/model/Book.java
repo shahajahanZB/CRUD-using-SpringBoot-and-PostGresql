@@ -13,16 +13,21 @@ public class Book {
     private String author;
     private Double price;
 
+    // MANY books → ONE category
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     public Book() {}
 
-    public Book(String title, String author, Double price) {
+    public Book(String title, String author, Double price, Category category) {
         this.title = title;
         this.author = author;
         this.price = price;
+        this.category = category;
     }
 
-    // Getters & Setters
-
+    // Getters & setters
     public Long getId() {
         return id;
     }
@@ -31,12 +36,12 @@ public class Book {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthor() {
@@ -54,5 +59,12 @@ public class Book {
     public void setPrice(Double price) {
         this.price = price;
     }
-}
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+}
