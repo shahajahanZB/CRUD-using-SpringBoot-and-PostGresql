@@ -4,6 +4,7 @@ import com.example.bookcrud.dto.BookRequest;
 import com.example.bookcrud.dto.BookResponse;
 import com.example.bookcrud.model.Book;
 import com.example.bookcrud.service.BookService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,40 +19,35 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    /* =========================
-       CREATE (ENTITY INPUT)
-       ========================= */
+    // ✅ PAGINATED LIST OF ALL BOOKS
+    @GetMapping
+    public Page<BookResponse> getBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return bookService.getBooksPaginated(page, size);
+    }
+
+    // ✅ PAGINATED BOOKS BY CATEGORY
+    @GetMapping("/category/{categoryId}")
+    public Page<BookResponse> getBooksByCategory(
+            @PathVariable Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return bookService.getBooksByCategory(categoryId, page, size);
+    }
+
     @PostMapping
     public Book createBook(@RequestBody BookRequest request) {
         return bookService.createBook(request);
     }
 
-    /* =========================
-       READ ALL (DTO OUTPUT)
-       Supports optional filter:
-       /api/books?categoryId=1
-       ========================= */
-    @GetMapping
-    public List<BookResponse> getAllBooks(
-            @RequestParam(required = false) Long categoryId
-    ) {
-        if (categoryId != null) {
-            return bookService.getBooksByCategory(categoryId);
-        }
-        return bookService.getAllBooks();
-    }
-
-    /* =========================
-       READ ONE (DTO OUTPUT)
-       ========================= */
     @GetMapping("/{id}")
     public BookResponse getBook(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
-    /* =========================
-       UPDATE (ENTITY INPUT)
-       ========================= */
     @PutMapping("/{id}")
     public Book updateBook(
             @PathVariable Long id,
@@ -60,12 +56,10 @@ public class BookController {
         return bookService.updateBook(id, book);
     }
 
-    /* =========================
-       DELETE
-       ========================= */
     @DeleteMapping("/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return "Book deleted successfully";
     }
 }
+

@@ -1,5 +1,8 @@
 package com.example.bookcrud.dto;
 
+import lombok.Getter;
+
+@Getter
 public class BookResponse {
 
     private Long id;
@@ -19,23 +22,4 @@ public class BookResponse {
         this.categoryName = categoryName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
 }
